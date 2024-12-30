@@ -9,7 +9,7 @@ class AddNameTranslationsToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->json('name_translations')->nullable(); // Add the JSON column to store translations
+            $table->json('name_translations')->nullable(); 
         });
     }
 
