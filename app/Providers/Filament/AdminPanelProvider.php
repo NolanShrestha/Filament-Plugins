@@ -17,17 +17,22 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use \Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->id('admin') // Ensure the id is correctly set
+            ->plugins([
+                FilamentJobsMonitorPlugin::make()
+                    ->enableNavigation(),
+            ])
             ->brandName('Filament Admin Panel')
             ->brandLogo(asset('images/logo.png'))
             ->favicon(asset('images/favicon.png'))
             ->default()
-            ->id('admin')
             ->path('admin')
             ->login()
             ->colors([

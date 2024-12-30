@@ -18,6 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Pages\ManageFooter;
+use Filament\Tables\Actions\BulkAction;  // Add this import
+use Illuminate\Support\Collection;  
+use App\Jobs\UsersCsvExportJob; // Correct import for Collection
+use Illuminate\Support\Facades\Notification;
 
 class UserResource extends Resource
 {
@@ -84,6 +88,7 @@ class UserResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
+        
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->formatStateUsing(function ($state) {
@@ -130,6 +135,19 @@ class UserResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    BulkAction::make('export-jobs')
+                    ->label('Background Export')
+                    ->icon('heroicon-o-cog')
+                    ->action(function (Collection $records) {
+                        UsersCsvExportJob::dispatch($records, 'users.csv');
+                        Notification::make()
+                            ->title('Export is ready')
+                            ->body('Your export is ready. You can download it from the exports page.')
+                            ->success()
+                            ->seconds(5)
+                            ->icon('heroicon-o-inbox-in')
+                            ->send();
+                    })
                 ]),
             ]);
     }
