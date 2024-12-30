@@ -11,6 +11,8 @@ use Filament\Tables;
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Filament\Support\Enums\Alignment;
+use Illuminate\Support\Facades\Hash;
+use Filament\Tables\Filters\SelectFilter;
 
 class UserResource extends Resource
 {
@@ -43,9 +45,28 @@ class UserResource extends Resource
                             ->email()
                             ->required(),
                     ])
-                    ->columnSpan('full')
-          
-                    ]);
+                    ->columnSpan('full'),
+
+                    Forms\Components\Section::make('User Details')
+                    ->schema([
+                        // Handling the translation fields for 'name'
+                        Forms\Components\TextInput::make('name.en') // English translation
+                            ->label('Name (English)')
+                            ->required(),
+                        Forms\Components\TextInput::make('name.es') // Spanish translation
+                            ->label('Name (Spanish)')
+                            ->required(),
+                        Forms\Components\TextInput::make('email')
+                            ->email()
+                            ->required()
+                            ->maxLength(255),
+                        Forms\Components\TextInput::make('password')
+                            ->password()
+                            ->required(fn (string $operation): bool => $operation === 'create')
+                            ->dehydrateStateUsing(fn (string $state): string => Hash::make($state))
+                            ->maxLength(255),
+                    ])->columnSpan('full'),
+            ]);
     }
 
     public static function table(Tables\Table $table): Tables\Table
@@ -56,7 +77,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('email')->searchable(),
             ])
             ->filters([
-                
+      
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
