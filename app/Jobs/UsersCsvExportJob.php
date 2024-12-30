@@ -8,7 +8,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Storage;
 use League\Csv\Writer;
 
 class UsersCsvExportJob implements ShouldQueue
@@ -20,6 +19,7 @@ class UsersCsvExportJob implements ShouldQueue
     /**
      * Create a new job instance.
      *
+     * @param \Illuminate\Database\Eloquent\Collection $users
      * @return void
      */
     public function __construct($users)
@@ -41,6 +41,6 @@ class UsersCsvExportJob implements ShouldQueue
             $csv->insertOne([$user->id, $user->name, $user->email]);
         }
 
-        // You can also implement logic to send a notification or email when the export is completed.
+      
     }
 }

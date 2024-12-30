@@ -18,10 +18,10 @@ use Illuminate\Database\Eloquent\Builder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\TextInput;
 use App\Filament\Pages\ManageFooter;
-use Filament\Tables\Actions\BulkAction;  // Add this import
+use Filament\Tables\Actions\BulkAction;
 use Illuminate\Support\Collection;  
-use App\Jobs\UsersCsvExportJob; // Correct import for Collection
-use Illuminate\Support\Facades\Notification;
+use App\Jobs\UsersCsvExportJob;
+use Filament\Notifications\Notification;
 
 class UserResource extends Resource
 {
@@ -33,15 +33,15 @@ class UserResource extends Resource
         return $form
             ->schema([
                 TextInput::make('copyright')
-                ->label('Copyright notice')
-                ->required(),
-            Repeater::make('links')
-                ->schema([
-                    TextInput::make('label')->required(),
-                    TextInput::make('url')
-                        ->url()
-                        ->required(),
-                ]),
+                    ->label('Copyright notice')
+                    ->required(),
+                Repeater::make('links')
+                    ->schema([
+                        TextInput::make('label')->required(),
+                        TextInput::make('url')
+                            ->url()
+                            ->required(),
+                    ]),
                 TableRepeater::make('users')
                     ->showLabels()
                     ->emptyLabel('There are no registered users!')
@@ -50,7 +50,7 @@ class UserResource extends Resource
                             ->markAsRequired()
                             ->align(Alignment::Center)
                             ->width('150px'),
-                        Header::make('email')
+                        Header::make('email'),
                     ])
                     ->renderHeader(false)
                     ->schema([
@@ -65,7 +65,6 @@ class UserResource extends Resource
                     ->columnSpan('full'),
                 Forms\Components\Section::make('User Details')
                     ->schema([
-                        // Handling the translation fields for 'name'
                         Forms\Components\TextInput::make('name.en') 
                             ->label('Name (English)')
                             ->required(),
@@ -88,12 +87,11 @@ class UserResource extends Resource
     public static function table(Tables\Table $table): Tables\Table
     {
         return $table
-        
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->formatStateUsing(function ($state) {
                         if (is_array($state)) {
-                            return $state['en'] ?? '-'; // English name translation
+                            return $state['en'] ?? '-'; 
                         }
                         return $state;
                     })
@@ -102,7 +100,7 @@ class UserResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->formatStateUsing(function ($state) {
                         if (is_array($state)) {
-                            return $state['es'] ?? '-'; // Spanish name translation
+                            return $state['es'] ?? '-'; 
                         }
                         return $state;
                     })
@@ -119,36 +117,44 @@ class UserResource extends Resource
                         'es' => 'Spanish',
                     ])
                     ->query(function (Builder $query, array $data) {
-                        if (! $data['value']) {
+                        if (!$data['value']) {
                             return $query;
                         }
-                        // Filter users based on the selected language
+              
                         return $query->whereNotNull("name->{$data['value']}");
-                    })
+                    }),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Action::make('activities') // Define the "activities" action
-                    ->label('View Activities') // Label for the action
-                    ->url(fn ($record) => UserResource::getUrl('activities', ['record' => $record])), // Dynamic URL
+                Action::make('activities')
+                    ->label('View Activities')
+                    ->url(fn($record) => UserResource::getUrl('activities', ['record' => $record])),
+                Action::make('export')
+                    ->label('Export Users')
+                    ->action(function () {
+                        $users = User::all();
+                        UsersCsvExportJob::dispatch($users);
+
+                        Notification::make()
+                            ->title('Export Started')
+                            ->body('The user export job is now running.')
+                            ->success()
+                            ->send();
+                    }),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                    BulkAction::make('export-jobs')
+                BulkAction::make('export-jobs')
                     ->label('Background Export')
                     ->icon('heroicon-o-cog')
                     ->action(function (Collection $records) {
                         UsersCsvExportJob::dispatch($records, 'users.csv');
+
                         Notification::make()
-                            ->title('Export is ready')
-                            ->body('Your export is ready. You can download it from the exports page.')
+                            ->title('Export Started')
+                            ->body('The user export job is now running.')
                             ->success()
-                            ->seconds(5)
-                            ->icon('heroicon-o-inbox-in')
                             ->send();
-                    })
-                ]),
+                    }),
             ]);
     }
 
@@ -167,7 +173,6 @@ class UserResource extends Resource
             'edit' => Pages\EditUser::route('/{record}/edit'),
             'activities' => Pages\ListUserActivities::route('/{record}/activities'),
             // 'manage-footer' => ManageFooter::route('/manage-footer'),
-        
         ];
     }
 }
