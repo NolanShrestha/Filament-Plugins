@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Spatie\Translatable\HasTranslations;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
+
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable, HasTranslations;
+    use HasFactory, Notifiable, HasTranslations, LogsActivity; // Use the LogsActivity trait
 
     /**
      * The attributes that are mass assignable.
@@ -41,7 +43,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-              'name' => 'json',
+            'name' => 'json',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
@@ -49,4 +51,20 @@ class User extends Authenticatable
 
     // Add the translatable attribute for name
     public $translatable = ['name'];
+
+    // Attributes to be logged
+    protected static $logAttributes = ['name', 'email']; 
+
+    /**
+     * The name of the activity log.
+     *
+     * @var string
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'email'])
+            ->logOnlyDirty()
+            ->setDescriptionForEvent(fn(string $eventName) => "User has been {$eventName}");
+    }
 }
