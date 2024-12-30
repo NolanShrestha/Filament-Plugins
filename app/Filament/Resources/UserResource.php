@@ -8,13 +8,16 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
-use Filament\Tables\Actions\Action; // Import Action class
+use Filament\Tables\Actions\Action; 
 use Awcodes\TableRepeater\Components\TableRepeater;
 use Awcodes\TableRepeater\Header;
 use Filament\Support\Enums\Alignment;
 use Illuminate\Support\Facades\Hash;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextInput;
+use App\Filament\Pages\ManageFooter;
 
 class UserResource extends Resource
 {
@@ -25,6 +28,16 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
+                TextInput::make('copyright')
+                ->label('Copyright notice')
+                ->required(),
+            Repeater::make('links')
+                ->schema([
+                    TextInput::make('label')->required(),
+                    TextInput::make('url')
+                        ->url()
+                        ->required(),
+                ]),
                 TableRepeater::make('users')
                     ->showLabels()
                     ->emptyLabel('There are no registered users!')
@@ -49,10 +62,10 @@ class UserResource extends Resource
                 Forms\Components\Section::make('User Details')
                     ->schema([
                         // Handling the translation fields for 'name'
-                        Forms\Components\TextInput::make('name.en') // English translation
+                        Forms\Components\TextInput::make('name.en') 
                             ->label('Name (English)')
                             ->required(),
-                        Forms\Components\TextInput::make('name.es') // Spanish translation
+                        Forms\Components\TextInput::make('name.es') 
                             ->label('Name (Spanish)')
                             ->required(),
                         Forms\Components\TextInput::make('email')
@@ -135,6 +148,8 @@ class UserResource extends Resource
             'create' => Pages\CreateUser::route('/create'),
             'edit' => Pages\EditUser::route('/{record}/edit'),
             'activities' => Pages\ListUserActivities::route('/{record}/activities'),
+            // 'manage-footer' => ManageFooter::route('/manage-footer'),
+        
         ];
     }
 }

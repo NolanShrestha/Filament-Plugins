@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Settings;
+namespace database\settings; 
 
 use Spatie\LaravelSettings\Settings;
 
@@ -11,6 +11,6 @@ class FooterSettings extends Settings
 
     public static function group(): string
     {
-        return 'footer';
+        return 'footer'; 
     }
 }
