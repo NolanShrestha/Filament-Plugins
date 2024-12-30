@@ -24,14 +24,14 @@ class AdminPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('admin') // Ensure the id is correctly set
+            ->id('admin') 
             ->plugins([
                 FilamentJobsMonitorPlugin::make()
                     ->enableNavigation(),
             ])
             ->brandName('Filament Admin Panel')
             ->brandLogo(asset('images/logo.png'))
-            ->favicon(asset('images/favicon.png'))
+            ->favicon(asset('images/logo.png'))
             ->default()
             ->path('admin')
             ->login()
