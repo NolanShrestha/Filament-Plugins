@@ -3,6 +3,7 @@
 namespace App\Providers\Filament;
 
 use Filament\Http\Middleware\Authenticate;
+use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -18,18 +19,22 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use \Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
+use TimWassenburg\FilamentTimesheets\FilamentTimesheetsPlugin;
+use \TomatoPHP\FilamentPos\FilamentPOSPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('admin') 
-            ->plugins([
-                FilamentJobsMonitorPlugin::make()
-                    ->enableNavigation(),
-            ])
+            ->id('admin') // Ensure this is at the top
             ->brandName('Filament Admin Panel')
+            ->plugins([
+                FilamentShieldPlugin::make(),
+                FilamentJobsMonitorPlugin::make()->enableNavigation(),
+                FilamentTimesheetsPlugin::make(),
+                FilamentPOSPlugin::make()->allowShield(),
+            ])
             ->brandLogo(asset('images/logo.png'))
             ->favicon(asset('images/logo.png'))
             ->default()
@@ -63,4 +68,5 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ]);
     }
+    
 }
