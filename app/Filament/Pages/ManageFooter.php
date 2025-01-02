@@ -2,7 +2,7 @@
 
 namespace App\Filament\Pages;
 
-use database\settings\FooterSettings;
+use App\Database\Settings\FooterSettings;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Pages\SettingsPage;

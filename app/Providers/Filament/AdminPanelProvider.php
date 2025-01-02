@@ -22,6 +22,7 @@ use \Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
 use TimWassenburg\FilamentTimesheets\FilamentTimesheetsPlugin;
 use \TomatoPHP\FilamentPos\FilamentPOSPlugin;
 use \TomatoPHP\FilamentInvoices\FilamentInvoicesPlugin;
+// use \App\Filament\Resources\QrCodeResource;
 
 class AdminPanelProvider extends PanelProvider
 {
@@ -30,6 +31,9 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->id('admin') 
             ->brandName('Filament Admin Panel')
+            // ->resources([
+            //     QrCodeResource::class,  
+            // ])
             ->plugins([
                 FilamentShieldPlugin::make(),
                 FilamentJobsMonitorPlugin::make()->enableNavigation(),
