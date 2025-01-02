@@ -21,19 +21,21 @@ use Illuminate\View\Middleware\ShareErrorsFromSession;
 use \Croustibat\FilamentJobsMonitor\FilamentJobsMonitorPlugin;
 use TimWassenburg\FilamentTimesheets\FilamentTimesheetsPlugin;
 use \TomatoPHP\FilamentPos\FilamentPOSPlugin;
+use \TomatoPHP\FilamentInvoices\FilamentInvoicesPlugin;
 
 class AdminPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
         return $panel
-            ->id('admin') // Ensure this is at the top
+            ->id('admin') 
             ->brandName('Filament Admin Panel')
             ->plugins([
                 FilamentShieldPlugin::make(),
                 FilamentJobsMonitorPlugin::make()->enableNavigation(),
                 FilamentTimesheetsPlugin::make(),
                 FilamentPOSPlugin::make()->allowShield(),
+                FilamentInvoicesPlugin::make(),
             ])
             ->brandLogo(asset('images/logo.png'))
             ->favicon(asset('images/logo.png'))

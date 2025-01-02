@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "012b062d7e598ac9e095971d82f279f7",
+    "content-hash": "fc3445be2958a76756784fcc15c577c9",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -10292,6 +10292,73 @@
                 }
             ],
             "time": "2024-12-14T11:01:44+00:00"
+        },
+        {
+            "name": "tomatophp/filament-invoices",
+            "version": "v1.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/tomatophp/filament-invoices.git",
+                "reference": "55d5351042cf12454f4e8a20e5df2bfbed6c4be1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/tomatophp/filament-invoices/zipball/55d5351042cf12454f4e8a20e5df2bfbed6c4be1",
+                "reference": "55d5351042cf12454f4e8a20e5df2bfbed6c4be1",
+                "shasum": ""
+            },
+            "require": {
+                "filament/filament": "^3.0.0",
+                "php": "^8.1|^8.2",
+                "tomatophp/console-helpers": "^1.1",
+                "tomatophp/filament-locations": "^1.0",
+                "tomatophp/filament-types": "^1.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "TomatoPHP\\FilamentInvoices\\FilamentInvoicesServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "TomatoPHP\\FilamentInvoices\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Fady Mondy",
+                    "email": "info@3x1.io"
+                }
+            ],
+            "description": "Generate and manage your invoices / payments using multi currencies and multi types in FilamentPHP",
+            "keywords": [
+                "filament",
+                "filament-plugin",
+                "invoices",
+                "laravel",
+                "payments",
+                "php",
+                "tomato-php",
+                "tomatophp"
+            ],
+            "support": {
+                "issues": "https://github.com/tomatophp/filament-invoices/issues",
+                "source": "https://github.com/tomatophp/filament-invoices/tree/v1.0.5"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/3x1io",
+                    "type": "github"
+                }
+            ],
+            "time": "2024-12-22T22:59:55+00:00"
         },
         {
             "name": "tomatophp/filament-locations",
